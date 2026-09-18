@@ -36,6 +36,7 @@ smtg_add_vst3plugin(SuperPowers
 
 target_link_libraries(SuperPowers PRIVATE sdk vstgui_support)
 target_compile_features(SuperPowers PRIVATE cxx_std_17)
+target_compile_definitions(SuperPowers PRIVATE NOMINMAX)
 
 smtg_target_add_plugin_resources(SuperPowers
     RESOURCES
