@@ -54,6 +54,16 @@ jobs:
           Write-Host "SuperPowers source overrides applied."
           Get-ChildItem "work\resource"
 
+      - name: Apply realtime GUI hotfix
+        shell: pwsh
+        run: |
+          $parts = Get-ChildItem "hotfix\superpowers-hotfix.part*.b64" | Sort-Object Name
+          if (-not $parts) { throw "Hotfix payload parts were not found." }
+          $b64 = ($parts | ForEach-Object { Get-Content $_.FullName -Raw }) -join ""
+          [IO.File]::WriteAllBytes("superpowers-hotfix.zip", [Convert]::FromBase64String($b64))
+          Expand-Archive -Path "superpowers-hotfix.zip" -DestinationPath "work" -Force
+          Write-Host "Realtime GUI hotfix applied."
+
       - name: Apply current SDK and Windows compatibility fixes
         shell: pwsh
         run: |
