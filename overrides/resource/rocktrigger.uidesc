@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<vstgui-ui-description version="1">
+  <bitmaps>
+    <bitmap name="GELogo" path="ge_logo.png"/>
+    <bitmap name="SuperTitle" path="superpowers_title.png"/>
+    <bitmap name="KnobFace" path="knob_face.png"/>
+    <bitmap name="WaveformPanel" path="waveform_panel.png"/>
+    <bitmap name="Meter" path="meter.png"/>
+  </bitmaps>
+
+  <fonts>
+    <font name="HeaderSmall" font-name="Arial" size="12" bold="false" italic="false"/>
+    <font name="Section" font-name="Arial" size="14" bold="false" italic="false"/>
+    <font name="Segment" font-name="Arial" size="13" bold="false" italic="false"/>
+    <font name="Value" font-name="Arial" size="20" bold="false" italic="false"/>
+    <font name="Tiny" font-name="Arial" size="10" bold="false" italic="false"/>
+    <font name="Button" font-name="Arial" size="12" bold="false" italic="false"/>
+  </fonts>
+
+  <colors>
+    <color name="BG" rgba="#0a0b0dff"/>
+    <color name="Text" rgba="#efefedff"/>
+    <color name="TextSoft" rgba="#c0c3c8ff"/>
+    <color name="Muted" rgba="#858b94ff"/>
+    <color name="Frame" rgba="#3b3e43ff"/>
+    <color name="Panel" rgba="#0c0e10ff"/>
+    <color name="PanelHi" rgba="#15171aff"/>
+    <color name="ButtonBG" rgba="#111316ff"/>
+    <color name="Red" rgba="#ff3740ff"/>
+    <color name="RedDim" rgba="#6f181cff"/>
+    <color name="WhiteArc" rgba="#d5d8dcff"/>
+    <color name="Black" rgba="#050506ff"/>
+  </colors>
+
+  <gradients>
+    <gradient name="SegmentNormal">
+      <color-stop rgba="#17191cff" start="0"/>
+      <color-stop rgba="#0b0c0eff" start="1"/>
+    </gradient>
+    <gradient name="SegmentSelected">
+      <color-stop rgba="#3a0d10ff" start="0"/>
+      <color-stop rgba="#16090aff" start="0.72"/>
+      <color-stop rgba="#0c0d0fff" start="1"/>
+    </gradient>
+  </gradients>
+
+  <control-tags>
+    <control-tag name="Sound" tag="100"/>
+    <control-tag name="Threshold" tag="101"/>
+    <control-tag name="Retrigger" tag="102"/>
+    <control-tag name="Output" tag="103"/>
+  </control-tags>
+
+  <template class="CViewContainer" name="view" origin="0, 0" size="1200, 760"
+            minSize="1200, 760" maxSize="1200, 760"
+            background-color="BG" transparent="false">
+
+    <view class="CTextLabel" origin="18, 154" size="1164, 263" title=""
+          back-color="Panel" frame-color="Frame" frame-width="1" round-rect-radius="10" style-round-rect="true"
+          transparent="false" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="18, 438" size="1164, 182" title=""
+          back-color="Black" frame-color="Frame" frame-width="1" round-rect-radius="10" style-round-rect="true"
+          transparent="false" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="18, 644" size="1164, 68" title=""
+          back-color="Panel" frame-color="Frame" frame-width="1" round-rect-radius="10" style-round-rect="true"
+          transparent="false" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="18, 141" size="1164, 1" title=""
+          back-color="Frame" frame-color="Frame" style-no-frame="true"
+          transparent="false" mouse-enabled="false"/>
+
+    <view class="CView" origin="34, 13" size="116, 116" bitmap="GELogo"
+          mouse-enabled="false" transparent="true"/>
+    <view class="CTextLabel" origin="165, 35" size="150, 22" title="DRUMS"
+          font="HeaderSmall" font-color="TextSoft" style-no-frame="true"
+          text-alignment="left" transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="165, 57" size="150, 22" title="BIGGER"
+          font="HeaderSmall" font-color="TextSoft" style-no-frame="true"
+          text-alignment="left" transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="165, 79" size="150, 22" title="HARDER"
+          font="HeaderSmall" font-color="TextSoft" style-no-frame="true"
+          text-alignment="left" transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="165, 101" size="150, 22" title="CLEANER"
+          font="HeaderSmall" font-color="TextSoft" style-no-frame="true"
+          text-alignment="left" transparent="true" mouse-enabled="false"/>
+    <view class="CView" origin="370, 21" size="470, 100" bitmap="SuperTitle"
+          mouse-enabled="false" transparent="true"/>
+    <view class="CTextLabel" origin="1080, 25" size="88, 20" title="v 1.0.2"
+          font="Tiny" font-color="TextSoft" style-no-frame="true"
+          text-alignment="right" transparent="true" mouse-enabled="false"/>
+
+    <view class="CTextLabel" origin="20, 149" size="1160, 18" title="S O U N D"
+          font="Tiny" font-color="Muted" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+    <view class="CSegmentButton" control-tag="Sound" origin="126, 170" size="948, 50"
+          min-value="0" max-value="4" default-value="0" wheel-inc-value="1"
+          font="Segment" style="horizontal" text-alignment="center"
+          text-color="TextSoft" text-color-highlighted="Text"
+          frame-color="Frame" frame-color-highlighted="Red" frame-width="1" round-radius="8"
+          gradient="SegmentNormal" gradient-highlighted="SegmentSelected"
+          segment-names="MODERN ROCK,MODERN METAL,ALTERNATIVE,PROGRESSIVE ROCK,TRAP ROCK"
+          transparent="false"/>
+
+    <view class="CTextLabel" origin="49, 230" size="60, 18" title="IN"
+          font="Section" font-color="TextSoft" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+    <view class="CView" origin="61, 253" size="34, 220" bitmap="Meter"
+          mouse-enabled="false" transparent="true"/>
+    <view class="CTextLabel" origin="25, 470" size="106, 14" title="-60   -24   -6"
+          font="Tiny" font-color="Muted" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+
+    <view class="CTextLabel" origin="1092, 230" size="60, 18" title="OUT"
+          font="Section" font-color="TextSoft" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+    <view class="CView" origin="1105, 253" size="34, 220" bitmap="Meter"
+          mouse-enabled="false" transparent="true"/>
+    <view class="CTextLabel" origin="1069, 470" size="106, 14" title="-60   -24   -6"
+          font="Tiny" font-color="Muted" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+
+    <view class="CTextLabel" origin="224, 244" size="230, 24" title="T H R E S H O L D"
+          font="Section" font-color="TextSoft" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+    <view class="CKnob" control-tag="Threshold" origin="273, 276" size="132, 132"
+          bitmap="KnobFace" min-value="0" max-value="1" default-value="0.6" wheel-inc-value="0.01"
+          angle-start="135" angle-range="270" value-inset="26" zoom-factor="1.5"
+          handle-shadow-color="Black" handle-color="Text"
+          circle-drawing="false" corona-drawing="true" corona-color="Red"
+          corona-from-center="false" corona-inset="5" corona-outline="false"
+          handle-line-width="4" transparent="true"/>
+    <view class="CTextLabel" origin="238, 398" size="70, 16" title="-60 dB"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="center"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="372, 398" size="70, 16" title="0 dB"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="center"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextEdit" control-tag="Threshold" origin="282, 411" size="114, 30"
+          font="Value" font-color="Text" back-color="BG" frame-color="BG" style-no-frame="true"
+          text-alignment="center" value-precision="1" transparent="true"/>
+
+    <view class="CTextLabel" origin="485, 244" size="230, 24" title="R E T R I G G E R"
+          font="Section" font-color="TextSoft" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+    <view class="CKnob" control-tag="Retrigger" origin="534, 276" size="132, 132"
+          bitmap="KnobFace" min-value="0" max-value="1" default-value="0.0510204082" wheel-inc-value="0.01"
+          angle-start="135" angle-range="270" value-inset="26" zoom-factor="1.5"
+          handle-shadow-color="Black" handle-color="Text"
+          circle-drawing="false" corona-drawing="true" corona-color="Red"
+          corona-from-center="false" corona-inset="5" corona-outline="false"
+          handle-line-width="4" transparent="true"/>
+    <view class="CTextLabel" origin="496, 398" size="70, 16" title="10 ms"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="center"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="636, 398" size="78, 16" title="500 ms"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="center"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextEdit" control-tag="Retrigger" origin="543, 411" size="114, 30"
+          font="Value" font-color="Text" back-color="BG" frame-color="BG" style-no-frame="true"
+          text-alignment="center" value-precision="0" transparent="true"/>
+
+    <view class="CTextLabel" origin="746, 244" size="230, 24" title="O U T P U T"
+          font="Section" font-color="TextSoft" style-no-frame="true"
+          text-alignment="center" transparent="true" mouse-enabled="false"/>
+    <view class="CKnob" control-tag="Output" origin="795, 276" size="132, 132"
+          bitmap="KnobFace" min-value="0" max-value="1" default-value="0.5" wheel-inc-value="0.01"
+          angle-start="135" angle-range="270" value-inset="26" zoom-factor="1.5"
+          handle-shadow-color="Black" handle-color="Text"
+          circle-drawing="false" corona-drawing="true" corona-color="WhiteArc"
+          corona-from-center="false" corona-inset="5" corona-outline="false"
+          handle-line-width="4" transparent="true"/>
+    <view class="CTextLabel" origin="754, 398" size="76, 16" title="-24 dB"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="center"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="901, 398" size="76, 16" title="+24 dB"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="center"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextEdit" control-tag="Output" origin="804, 411" size="114, 30"
+          font="Value" font-color="Text" back-color="BG" frame-color="BG" style-no-frame="true"
+          text-alignment="center" value-precision="1" transparent="true"/>
+
+    <view class="CView" origin="36, 442" size="1128, 188" bitmap="WaveformPanel"
+          mouse-enabled="false" transparent="false"/>
+    <view class="CTextLabel" origin="52, 472" size="120, 18" title="I N P U T"
+          font="Tiny" font-color="TextSoft" style-no-frame="true" text-alignment="left"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextLabel" origin="52, 558" size="120, 18" title="T R I G G E R E D"
+          font="Tiny" font-color="TextSoft" style-no-frame="true" text-alignment="left"
+          transparent="true" mouse-enabled="false"/>
+
+    <view class="CTextLabel" origin="58, 666" size="90, 20" title="SAMPLE:"
+          font="Tiny" font-color="Muted" style-no-frame="true" text-alignment="left"
+          transparent="true" mouse-enabled="false"/>
+    <view class="CTextEdit" control-tag="Sound" origin="145, 660" size="385, 30"
+          font="HeaderSmall" font-color="TextSoft" back-color="BG" frame-color="BG" style-no-frame="true"
+          text-alignment="left" value-precision="0" transparent="true"/>
+    <view class="CTextLabel" origin="815, 657" size="104, 36" title="LOAD..."
+          font="Button" font-color="TextSoft" back-color="ButtonBG" frame-color="Frame" frame-width="1"
+          round-rect-radius="6" style-round-rect="true" text-alignment="center" transparent="false"
+          mouse-enabled="false"/>
+    <view class="CTextLabel" origin="930, 657" size="104, 36" title="BROWSE"
+          font="Button" font-color="TextSoft" back-color="ButtonBG" frame-color="Frame" frame-width="1"
+          round-rect-radius="6" style-round-rect="true" text-alignment="center" transparent="false"
+          mouse-enabled="false"/>
+    <view class="CTextLabel" origin="1045, 657" size="104, 36" title="RESET"
+          font="Button" font-color="TextSoft" back-color="ButtonBG" frame-color="Frame" frame-width="1"
+          round-rect-radius="6" style-round-rect="true" text-alignment="center" transparent="false"
+          mouse-enabled="false"/>
+  </template>
+</vstgui-ui-description>
