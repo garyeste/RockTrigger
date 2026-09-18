@@ -25,6 +25,26 @@ jobs:
           Expand-Archive -Path "rocktrigger-source.zip" -DestinationPath "work" -Force
           Get-ChildItem work
 
+      - name: Apply SDK and Windows compatibility fixes
+        shell: pwsh
+        run: |
+          $entryPath = "work\source\rocktriggerentry.cpp"
+          $entry = Get-Content $entryPath -Raw
+          $entry = $entry.Replace("public.sdk/source/main/pluginfactory_constexpr.h", "public.sdk/source/main/pluginfactory.h")
+          Set-Content -Path $entryPath -Value $entry -NoNewline
+
+          $controllerPath = "work\source\rocktriggercontroller.cpp"
+          $controller = Get-Content $controllerPath -Raw
+          $controller = $controller.Replace("USTRING (", "STR16 (")
+          Set-Content -Path $controllerPath -Value $controller -NoNewline
+
+          $bankPath = "work\source\samplebank.cpp"
+          $bank = Get-Content $bankPath -Raw
+          $old = "#if defined(_WIN32)`n#include <windows.h>"
+          $new = "#if defined(_WIN32)`n#ifndef NOMINMAX`n#define NOMINMAX`n#endif`n#include <windows.h>"
+          $bank = $bank.Replace($old, $new)
+          Set-Content -Path $bankPath -Value $bank -NoNewline
+
       - name: Configure
         shell: pwsh
         run: |
