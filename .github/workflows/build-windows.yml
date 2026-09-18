@@ -1,4 +1,4 @@
-name: Build Windows VST3 + Installer
+name: Build SuperPowers Windows VST3 + Installer
 
 on:
   workflow_dispatch:
@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Restore source tree
+      - name: Restore base source tree
         shell: pwsh
         run: |
           $parts = Get-ChildItem "payload\source.part*.b64" | Sort-Object Name
@@ -23,16 +23,38 @@ jobs:
           $b64 = ($parts | ForEach-Object { Get-Content $_.FullName -Raw }) -join ""
           [IO.File]::WriteAllBytes("rocktrigger-source.zip", [Convert]::FromBase64String($b64))
           Expand-Archive -Path "rocktrigger-source.zip" -DestinationPath "work" -Force
-          Get-ChildItem work
 
-      - name: Upload restored source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: RockTrigger-source-snapshot
-          path: rocktrigger-source.zip
-          if-no-files-found: error
+      - name: Apply SuperPowers v1.0.2 source and GUI
+        shell: pwsh
+        run: |
+          Copy-Item "overrides\CMakeLists.txt" "work\CMakeLists.txt" -Force
+          Copy-Item "overrides\installer\RockTrigger.iss" "work\installer\RockTrigger.iss" -Force
+          Copy-Item "overrides\resource\rocktrigger.uidesc" "work\resource\rocktrigger.uidesc" -Force
 
-      - name: Apply SDK and Windows compatibility fixes
+          Copy-Item "overrides\source\rocktriggerids.h" "work\source\rocktriggerids.h" -Force
+          Copy-Item "overrides\source\rocktriggerprocessor.h" "work\source\rocktriggerprocessor.h" -Force
+          Copy-Item "overrides\source\rocktriggercontroller.cpp" "work\source\rocktriggercontroller.cpp" -Force
+          Copy-Item "overrides\source\rocktriggerentry.cpp" "work\source\rocktriggerentry.cpp" -Force
+
+          $processorB64 = Get-Content "overrides\source\rocktriggerprocessor.cpp.b64" -Raw
+          [IO.File]::WriteAllBytes("work\source\rocktriggerprocessor.cpp", [Convert]::FromBase64String($processorB64))
+
+          $assets = @(
+            "ge_logo.png",
+            "superpowers_title.png",
+            "knob_face.png",
+            "waveform_panel.png",
+            "meter.png"
+          )
+          foreach ($asset in $assets) {
+            $assetB64 = Get-Content "overrides\assets\$asset.b64" -Raw
+            [IO.File]::WriteAllBytes("work\resource\$asset", [Convert]::FromBase64String($assetB64))
+          }
+
+          Write-Host "SuperPowers source overrides applied."
+          Get-ChildItem "work\resource"
+
+      - name: Apply current SDK and Windows compatibility fixes
         shell: pwsh
         run: |
           $idsPath = "work\source\rocktriggerids.h"
@@ -48,8 +70,9 @@ jobs:
 
           $bankPath = "work\source\samplebank.cpp"
           $bank = Get-Content $bankPath -Raw
-          $old = "#if defined(_WIN32)`n#include <windows.h>"
-          $new = "#if defined(_WIN32)`n#ifndef NOMINMAX`n#define NOMINMAX`n#endif`n#include <windows.h>"
+          $nl = [Environment]::NewLine
+          $old = "#if defined(_WIN32)" + $nl + "#include <windows.h>"
+          $new = "#if defined(_WIN32)" + $nl + "#ifndef NOMINMAX" + $nl + "#define NOMINMAX" + $nl + "#endif" + $nl + "#include <windows.h>"
           $bank = $bank.Replace($old, $new)
           Set-Content -Path $bankPath -Value $bank -NoNewline
 
@@ -61,15 +84,15 @@ jobs:
       - name: Build Release
         shell: pwsh
         run: |
-          cmake --build work/build --config Release --target RockTrigger --parallel
+          cmake --build work/build --config Release --target SuperPowers --parallel
 
       - name: Stage VST3 bundle
         shell: pwsh
         run: |
-          $plugin = Get-ChildItem -Path work/build -Recurse -Directory -Filter "RockTrigger.vst3" | Select-Object -First 1
-          if (-not $plugin) { throw "RockTrigger.vst3 was not found after the build." }
+          $plugin = Get-ChildItem -Path work/build -Recurse -Directory -Filter "SuperPowers.vst3" | Select-Object -First 1
+          if (-not $plugin) { throw "SuperPowers.vst3 was not found after the build." }
           New-Item -ItemType Directory -Force -Path work/dist | Out-Null
-          Copy-Item $plugin.FullName "work\dist\RockTrigger.vst3" -Recurse -Force
+          Copy-Item $plugin.FullName "work\dist\SuperPowers.vst3" -Recurse -Force
           Write-Host "Staged $($plugin.FullName)"
 
       - name: Install Inno Setup
@@ -87,13 +110,13 @@ jobs:
       - name: Upload VST3 bundle
         uses: actions/upload-artifact@v4
         with:
-          name: RockTrigger-v0.2.0-VST3-Windows-x64
-          path: work/dist/RockTrigger.vst3
+          name: SuperPowers-v1.0.2-VST3-Windows-x64
+          path: work/dist/SuperPowers.vst3
           if-no-files-found: error
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: RockTrigger-v0.2.0-Windows-x64-Setup
+          name: SuperPowers-v1.0.2-Windows-x64-Setup
           path: work/installer/output/*.exe
           if-no-files-found: error
