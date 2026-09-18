@@ -25,6 +25,19 @@ jobs:
           Expand-Archive -Path "rocktrigger-source.zip" -DestinationPath "work" -Force
           Get-ChildItem work
 
+      - name: Dump current GUI sources
+        shell: pwsh
+        run: |
+          Write-Host "=== UIDESC BEGIN ==="
+          Get-Content "work\resource\rocktrigger.uidesc" -Raw
+          Write-Host "=== UIDESC END ==="
+          Write-Host "=== CONTROLLER BEGIN ==="
+          Get-Content "work\source\rocktriggercontroller.cpp" -Raw
+          Write-Host "=== CONTROLLER END ==="
+          Write-Host "=== CMAKE BEGIN ==="
+          Get-Content "work\CMakeLists.txt" -Raw
+          Write-Host "=== CMAKE END ==="
+
       - name: Apply SDK and Windows compatibility fixes
         shell: pwsh
         run: |
