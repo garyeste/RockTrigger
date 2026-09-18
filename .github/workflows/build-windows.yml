@@ -28,10 +28,11 @@ jobs:
       - name: Apply SDK and Windows compatibility fixes
         shell: pwsh
         run: |
-          $entryPath = "work\source\rocktriggerentry.cpp"
-          $entry = Get-Content $entryPath -Raw
-          $entry = $entry.Replace("public.sdk/source/main/pluginfactory_constexpr.h", "public.sdk/source/main/pluginfactory.h")
-          Set-Content -Path $entryPath -Value $entry -NoNewline
+          $idsPath = "work\source\rocktriggerids.h"
+          $ids = Get-Content $idsPath -Raw
+          $ids = $ids.Replace("static const FUID kProcessorUID (0xF5DFA5DC, 0x94C4461F, 0x80391E58, 0x150063F1);", "static DECLARE_UID (kProcessorUID, 0xF5DFA5DC, 0x94C4461F, 0x80391E58, 0x150063F1);")
+          $ids = $ids.Replace("static const FUID kControllerUID (0x71713D93, 0x192A465B, 0xB9DE9A96, 0x960DD4EF);", "static DECLARE_UID (kControllerUID, 0x71713D93, 0x192A465B, 0xB9DE9A96, 0x960DD4EF);")
+          Set-Content -Path $idsPath -Value $ids -NoNewline
 
           $controllerPath = "work\source\rocktriggercontroller.cpp"
           $controller = Get-Content $controllerPath -Raw
