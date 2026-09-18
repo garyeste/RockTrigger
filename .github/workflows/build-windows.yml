@@ -25,24 +25,12 @@ jobs:
           Expand-Archive -Path "rocktrigger-source.zip" -DestinationPath "work" -Force
           Get-ChildItem work
 
-      - name: Dump DSP parameter sources
-        shell: pwsh
-        run: |
-          Write-Host "=== CONTROLLER BEGIN ==="
-          Get-Content "work\source\rocktriggercontroller.cpp" -Raw
-          Write-Host "=== CONTROLLER END ==="
-          Write-Host "=== PROCESSOR HEADER BEGIN ==="
-          Get-Content "work\source\rocktriggerprocessor.h" -Raw
-          Write-Host "=== PROCESSOR HEADER END ==="
-          Write-Host "=== PROCESSOR CPP BEGIN ==="
-          Get-Content "work\source\rocktriggerprocessor.cpp" -Raw
-          Write-Host "=== PROCESSOR CPP END ==="
-          Write-Host "=== IDS BEGIN ==="
-          Get-Content "work\source\rocktriggerids.h" -Raw
-          Write-Host "=== IDS END ==="
-          Write-Host "=== CMAKE BEGIN ==="
-          Get-Content "work\CMakeLists.txt" -Raw
-          Write-Host "=== CMAKE END ==="
+      - name: Upload restored source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: RockTrigger-source-snapshot
+          path: rocktrigger-source.zip
+          if-no-files-found: error
 
       - name: Apply SDK and Windows compatibility fixes
         shell: pwsh
