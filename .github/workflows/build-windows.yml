@@ -57,9 +57,18 @@ jobs:
       - name: Apply realtime GUI hotfix
         shell: pwsh
         run: |
-          $parts = Get-ChildItem "hotfix\superpowers-hotfix.part*.b64" | Sort-Object Name
-          if (-not $parts) { throw "Hotfix payload parts were not found." }
-          $b64 = ($parts | ForEach-Object { Get-Content $_.FullName -Raw }) -join ""
+          $partNames = @(
+            "hotfix\superpowers-hotfix.part00.b64",
+            "hotfix\superpowers-hotfix.part01.b64",
+            "hotfix\superpowers-hotfix.part02.b64",
+            "hotfix\superpowers-hotfix.part03a.b64",
+            "hotfix\superpowers-hotfix.part03b.b64",
+            "hotfix\superpowers-hotfix.part04.b64",
+            "hotfix\superpowers-hotfix.part05.b64",
+            "hotfix\superpowers-hotfix.part06.b64"
+          )
+          foreach ($p in $partNames) { if (-not (Test-Path $p)) { throw "Missing hotfix part: $p" } }
+          $b64 = ($partNames | ForEach-Object { Get-Content $_ -Raw }) -join ""
           [IO.File]::WriteAllBytes("superpowers-hotfix.zip", [Convert]::FromBase64String($b64))
           Expand-Archive -Path "superpowers-hotfix.zip" -DestinationPath "work" -Force
           Write-Host "Realtime GUI hotfix applied."
