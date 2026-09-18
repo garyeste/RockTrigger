@@ -81,6 +81,39 @@ jobs:
 
           Write-Host "Realtime GUI hotfix applied."
 
+      - name: Apply realtime GUI hotfix
+        shell: pwsh
+        run: |
+          $partNames = @(
+            "hotfix\superpowers-hotfix.part00.b64",
+            "hotfix\superpowers-hotfix.part01.b64",
+            "hotfix\superpowers-hotfix.part02.b64",
+            "hotfix\superpowers-hotfix.part03a.b64",
+            "hotfix\superpowers-hotfix.part03b1.b64",
+            "hotfix\superpowers-hotfix.part03b2.b64",
+            "hotfix\superpowers-hotfix.part04.b64",
+            "hotfix\superpowers-hotfix.part05.b64",
+            "hotfix\superpowers-hotfix.part06.b64"
+          )
+          $b64 = ($partNames | ForEach-Object { Get-Content $_ -Raw }) -join ""
+          [IO.File]::WriteAllBytes("superpowers-hotfix.zip", [Convert]::FromBase64String($b64))
+
+          $hash = (Get-FileHash "superpowers-hotfix.zip" -Algorithm SHA256).Hash.ToLower()
+          if ($hash -ne "ae104c5d375d0074bb82fac1ba0b3c93a58525fa8a5815788cdfdfd052b2697e") {
+            throw "Hotfix payload hash mismatch: $hash"
+          }
+
+          Remove-Item "hotfixwork" -Recurse -Force -ErrorAction SilentlyContinue
+          Expand-Archive -Path "superpowers-hotfix.zip" -DestinationPath "hotfixwork" -Force
+
+          Copy-Item "hotfixwork\CMakeLists.txt" "work\CMakeLists.txt" -Force
+          Copy-Item "hotfixwork\source\*" "work\source\" -Force
+          Copy-Item "hotfixwork\resource\*" "work\resource\" -Force
+
+          Write-Host "Realtime meter/waveform hotfix applied."
+          Get-ChildItem "work\source"
+          Get-ChildItem "work\resource"
+
       - name: Apply current SDK and Windows compatibility fixes
         shell: pwsh
         run: |
