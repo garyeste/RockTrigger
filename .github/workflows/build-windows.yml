@@ -72,6 +72,13 @@ jobs:
           $b64 = ($partNames | ForEach-Object { Get-Content $_ -Raw }) -join ""
           [IO.File]::WriteAllBytes("superpowers-hotfix.zip", [Convert]::FromBase64String($b64))
           Expand-Archive -Path "superpowers-hotfix.zip" -DestinationPath "work" -Force
+
+          # Remove an obsolete VSTGUI call; CView transparency is controlled by view attributes.
+          $customViews = "work\source\customviews.cpp"
+          $cv = Get-Content $customViews -Raw
+          $cv = $cv -replace "\s*setTransparent \(true\);", ""
+          Set-Content -Path $customViews -Value $cv -NoNewline
+
           Write-Host "Realtime GUI hotfix applied."
 
       - name: Apply current SDK and Windows compatibility fixes
