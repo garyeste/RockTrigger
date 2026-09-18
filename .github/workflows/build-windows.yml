@@ -1,0 +1,71 @@
+name: Build Windows VST3 + Installer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore source tree
+        shell: pwsh
+        run: |
+          $parts = Get-ChildItem "payload\source.part*.b64" | Sort-Object Name
+          if (-not $parts) { throw "Source payload parts were not found." }
+          $b64 = ($parts | ForEach-Object { Get-Content $_.FullName -Raw }) -join ""
+          [IO.File]::WriteAllBytes("rocktrigger-source.zip", [Convert]::FromBase64String($b64))
+          Expand-Archive -Path "rocktrigger-source.zip" -DestinationPath "work" -Force
+          Get-ChildItem work
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S work -B work/build -G "Visual Studio 17 2022" -A x64 -DSMTG_CREATE_PLUGIN_LINK=0
+
+      - name: Build Release
+        shell: pwsh
+        run: |
+          cmake --build work/build --config Release --target RockTrigger --parallel
+
+      - name: Stage VST3 bundle
+        shell: pwsh
+        run: |
+          $plugin = Get-ChildItem -Path work/build -Recurse -Directory -Filter "RockTrigger.vst3" | Select-Object -First 1
+          if (-not $plugin) { throw "RockTrigger.vst3 was not found after the build." }
+          New-Item -ItemType Directory -Force -Path work/dist | Out-Null
+          Copy-Item $plugin.FullName "work\dist\RockTrigger.vst3" -Recurse -Force
+          Write-Host "Staged $($plugin.FullName)"
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+
+      - name: Build EXE installer
+        shell: pwsh
+        run: |
+          $iscc = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+          if (-not (Test-Path $iscc)) { throw "ISCC.exe was not found." }
+          & $iscc "work\installer\RockTrigger.iss"
+
+      - name: Upload VST3 bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: RockTrigger-v0.2.0-VST3-Windows-x64
+          path: work/dist/RockTrigger.vst3
+          if-no-files-found: error
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: RockTrigger-v0.2.0-Windows-x64-Setup
+          path: work/installer/output/*.exe
+          if-no-files-found: error
